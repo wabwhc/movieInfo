@@ -1,0 +1,9 @@
+node_modules
+.env
+database.js
+*.lock
+public/
+.babelrc
+.eslintrc.json
+.next
+client/README.md
