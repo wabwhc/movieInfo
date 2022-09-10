@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import MovieCard from "../../components/movie/MovieCard";
 import { client, gql } from "../api/apollo/apollo";
 import apollo from "../api/apollo/getapollo";
 import Btn from "../../components/main/Btn";

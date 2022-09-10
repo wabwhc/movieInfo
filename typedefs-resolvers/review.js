@@ -22,7 +22,6 @@ const typeDefs = gql`
         result: [ReviewList]
         count: Int
     }
-
 `
 const resolvers = {
     Query: {
@@ -31,6 +30,9 @@ const resolvers = {
         review: (parent, args) => dbWorks.review(args),
         countReviews: dbWorks.countReviews,
         reviewsByCondition: (parent, args) => dbWorks.reviewsByCondition(args),
+    },
+    Mutation: {
+        postReview: (parent, args, context) => dbWorks.postReview(args, context),
     }
 }
 

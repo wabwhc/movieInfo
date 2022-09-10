@@ -45,6 +45,7 @@ export default function Reviews(){
     
     return(
         <div className="w-5/6 m-auto 2xl:w-1/2">
+            <input className="block m-auto" placeholder="작성자아이디" />
             <div className="w-full">
                 {
                     <ReviewList reviews={state.reviews} size={"3xl"}/>

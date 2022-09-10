@@ -15,7 +15,12 @@ export default function Login() {
     
     if(data){
         console.log(data.login);
-        document.cookie = "AccessToken=" + data.login.AccessToken;
+        if(data.login.AccessToken === "-1" || data.login.AccessToken === "-2"){
+            window.alert("정보가 틀립니다.");
+        }else{
+            document.cookie = "AccessToken=" + data.login.AccessToken;
+            window.location.href = "/"
+        }
     }
     
     const login = (): void => {
@@ -35,7 +40,6 @@ export default function Login() {
             <button onClick={(e) => {
                 e.preventDefault();
                 login();
-                window.location.href = "/"
             }}>로그인</button>
         </div>
     )

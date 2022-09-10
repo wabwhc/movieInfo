@@ -13,7 +13,7 @@ const MutationLike = gql`
             like_count
         }
     }
-`   
+`
 
 
 const GetReview = async(review_id: number): Promise<Review> => {
@@ -83,7 +83,7 @@ export default function Review(){
     }
 
     return(
-        <div className="w-5/6 m-auto">
+        <div className="w-5/6 m-auto 2xl:w-1/2">
             <div className="w-full h-fit text-3xl text-center bg-white">
                 {
                     review.title
@@ -110,7 +110,7 @@ export default function Review(){
                 </div>
                 <br />
                 <br />
-                <p>
+                <p className="text-center">
                     {
                         review.content
                     }

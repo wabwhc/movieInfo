@@ -17,6 +17,7 @@ const fs = require("fs");
 //sql문을 모아둔다.
 //ｓｑｌを　集めておく
 const dbWorks = {
+    //영화 관련
     movies: async() => {
         const [result] = await con.query("select * from movies order by release_date desc");
         return result
@@ -83,6 +84,7 @@ const dbWorks = {
         }
         return {base64};
     },
+    //리뷰관련
     reviews: async() => {
         const [result] = await con.query("select * from reviews order by create_at desc");
         return result
@@ -108,8 +110,20 @@ const dbWorks = {
         const [review] = await con.query("select * from reviews where review_id =?", [review_id]);
         const like = await dbWorks.like({review_id});
         const result = Object.assign({}, review[0], like);
-        return result
+        return result;
     },
+    postReview: async(args, context) => { 
+        try{
+            const [review] = await con.query("select movie_id from movies where title = ? and director = ?", [args.movie_title, args.director]);
+            const movie_id = review[0].movie_id;
+            await con.query("insert into reviews (movie_id, user_id, title, content) values (? ,? ,? ,? )", [movie_id, context.decoded.user_id, args.review_title, args.content]);
+            return {result: true};
+        }catch{
+            await con.query("insert into reviews (user_id, title, content) values (? ,? ,? )", [context.decoded.user_id, args.review_title, args.content]);    
+            return {result: true};
+        }
+    },
+    //회원관련
     signup: async(args) => {
         const {user_id, password} = args;
         try{
@@ -127,9 +141,9 @@ const dbWorks = {
         const {user_id, password} = args;
         const [result] = await con.query("select * from users where user_id = ?", [user_id]);
         if(result.length === 0){
-            return { AccessToken: "존재하지 않는 아이디"}
+            return { AccessToken: "-1"}
         }else if(result[0].password !== password){
-            return { AccessToken: "틀린 비밀번호입니다."}
+            return { AccessToken: "-2"}
         }else {
 
             const AccessToken = jwt.sign(

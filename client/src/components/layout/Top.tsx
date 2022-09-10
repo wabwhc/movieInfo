@@ -1,9 +1,14 @@
 import { client, gql } from "../../pages/api/apollo/apollo";
 import { useEffect, useState } from "react";
 import apollo from "../../pages/api/apollo/getapollo";
+import { useRouter } from "next/router";
 
+type statType = {
+  user_id: string | null | undefined
+  manager: boolean
+}
 
-const getUser =async(cookie: string): Promise<string> => {
+const getUser =async(cookie: string): Promise<statType> => {
   const {data} = await client.query({
     query : gql`
       query {
@@ -21,16 +26,25 @@ const getUser =async(cookie: string): Promise<string> => {
     }
   });
   
-  return data.token.user_id
+  return data.token
 }
 
 export default function Top(){
-    const [user, setUser] = useState<string>("");
+    const [user, setUser] = useState<statType>({user_id: undefined, manager: false});
+    const url = useRouter();
 
     useEffect(() => {
         apollo(document.cookie, getUser, setUser);
     }, [])
 
+    useEffect(() => {
+      if(url.pathname === "/review/write"){
+        if(user.user_id === null){
+          window.alert("로그인 필요");
+          window.location.href = "/login"
+        }
+      }
+    }, [user])
 
     return(
         <div>
@@ -39,11 +53,15 @@ export default function Top(){
                 <div className="w-56">
                     <div className="h-1/3"></div>
                     {
-                      user === null ?
+                      user.user_id === null ?
                       <a href="/login" className="block h-1/3 text-base text-end">로그인/회원가입</a>
                       :<>
-                      <div className="h-1/3 text-base text-end">{user}</div>  
-                      <button className="block w-full h-1/3 text-base text-end">로그아웃</button>
+                      <div className="h-1/3 text-base text-end">{user.user_id}</div>  
+                      <button className="block w-full h-1/3 text-base text-end"
+                      onClick={() => {
+                        document.cookie = "AccessToken=; Max-Age=0";
+                        location.href = "/";
+                      }}>로그아웃</button>
                       </>
                     }
                 </div>
@@ -59,9 +77,17 @@ export default function Top(){
                           <li className="mx-3">
                             <a className="text-blue-500 hover:text-blue-800 text-3xl" href="/list/reviews">영화 리뷰</a>
                           </li> 
+                          <li className="mx-3">
+                            <a className="text-blue-500 hover:text-blue-800 text-3xl" href="/review/write">리뷰 작성</a>
+                          </li>
+                          {
+                            user.manager &&
+                            <li className="mx-3">
+                              <a className="text-blue-500 hover:text-blue-800 text-3xl" href="/manager/movie">영화 편집</a>
+                            </li>
+                          }
                         </ul>
                     </div>
-                    <input className="w-1/5" placeholder="검색"></input>
                 </div>
             </div>
         </div>
