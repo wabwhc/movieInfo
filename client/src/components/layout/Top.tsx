@@ -3,48 +3,16 @@ import { useEffect, useState } from "react";
 import apollo from "../../pages/api/apollo/getapollo";
 import { useRouter } from "next/router";
 
-type statType = {
+type propsType = {
+  user: userType
+}
+
+type userType = {
   user_id: string | null | undefined
   manager: boolean
 }
 
-const getUser =async(cookie: string): Promise<statType> => {
-  const {data} = await client.query({
-    query : gql`
-      query {
-        token {
-            user_id
-            manager
-        }
-      }
-    `,
-    context: {
-      headers: {
-        authorization: `${document.cookie}`,
-        "Content-Type": "application/json",
-      }
-    }
-  });
-  
-  return data.token
-}
-
-export default function Top(){
-    const [user, setUser] = useState<statType>({user_id: undefined, manager: false});
-    const url = useRouter();
-
-    useEffect(() => {
-        apollo(document.cookie, getUser, setUser);
-    }, [])
-
-    useEffect(() => {
-      if(url.pathname === "/review/write"){
-        if(user.user_id === null){
-          window.alert("로그인 필요");
-          window.location.href = "/login"
-        }
-      }
-    }, [user])
+export default function Top({ user }: propsType){
 
     return(
         <div>
@@ -59,8 +27,8 @@ export default function Top(){
                       <div className="h-1/3 text-base text-end">{user.user_id}</div>  
                       <button className="block w-full h-1/3 text-base text-end"
                       onClick={() => {
-                        document.cookie = "AccessToken=; Max-Age=0";
                         location.href = "/";
+                        document.cookie = "AccessToken=; path=/; Max-Age=0";
                       }}>로그아웃</button>
                       </>
                     }
@@ -78,7 +46,15 @@ export default function Top(){
                             <a className="text-blue-500 hover:text-blue-800 text-3xl" href="/list/reviews">영화 리뷰</a>
                           </li> 
                           <li className="mx-3">
-                            <a className="text-blue-500 hover:text-blue-800 text-3xl" href="/review/write">리뷰 작성</a>
+                            <a className="text-blue-500 hover:text-blue-800 text-3xl" href="/review/write"
+                              onClick={(e) => {
+                                if(user.user_id === null){
+                                  e.preventDefault();
+                                  window.alert("로그인 필요");
+                                  window.location.href = "/login"
+                                }
+                              }}
+                            >리뷰 작성</a>
                           </li>
                           {
                             user.manager &&

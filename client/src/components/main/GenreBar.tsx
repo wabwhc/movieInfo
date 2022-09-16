@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { client, gql } from "../../pages/api/apollo/apollo";
-import MovieCard from "../movie/MovieCard";
 import apollo from "../../pages/api/apollo/getapollo";
 import MovieCardGroup from "../movie/MovieCardGroup";
 
@@ -36,7 +35,7 @@ export default function GenreBar({genre}: propsType){
 
     return(
     <div className="mt-1">
-        <div className="w-full h-10 bg-red-300">
+        <div className="w-full h-10 bg-blue-200">
             {genre}
         </div>
         <MovieCardGroup movies={movies}/>

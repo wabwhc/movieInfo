@@ -72,7 +72,7 @@ const dbWorks = {
     },
     movieByGenre: async(args) => {
         const [genre] = await dbWorks.genre(args);
-        const [result] = await con.query(`select * from movies where json_contains(genres, '"${genre.egenre}"') > 0 order by release_date desc limit 8`);
+        const [result] = await con.query(`select * from movies where json_contains(genres, '"${genre.egenre}"') > 0 order by release_date desc limit 12`);
         return result
     },
     image: (args) => {
@@ -80,6 +80,7 @@ const dbWorks = {
         try{
             base64 = fs.readFileSync(path.join(__dirname, "/public/img/" + args.movie_id + ".jpg")).toString("base64");
         }catch{
+            //기본 이미지
             base64 = fs.readFileSync(path.join(__dirname, "/public/img/lalaland.jpg")).toString("base64");
         }
         return {base64};
