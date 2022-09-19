@@ -66,6 +66,14 @@ const dbWorks = {
         const [result] = await con.query("select * from genres");
         return result
     },
+    postMovie: async(args) => {
+        
+        const [result] = await con.query("insert into movies (r_18, title, actors, genres, director, storyline, release_date) values (?, ?, ?, ?, ?, ?, ?)", [args.r18, args.title, JSON.stringify(args.actors), JSON.stringify(args.genres), args.director, args.storyline, args.release_date])
+        const insertMovieId = result.insertId;
+        // 이미지저장 오류나면 그냥 기본 이미지 보여주면 됨
+        fs.writeFile("./public/img/"+ insertMovieId +".jpg", args.base64, "base64", () => {});
+        return {insertMovieId}
+    },
     genre: async(args) => {
         const [result] = await con.query("select egenre from genres where genre = ?", [args.genre]);
         return result

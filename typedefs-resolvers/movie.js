@@ -48,6 +48,9 @@ const resolvers = {
         moviesPage: (parent, args) => dbWorks.moviesPage(args),
         moviesByCondition: (parent, args) => dbWorks.moviesByCondition(args),
         countMovies: dbWorks.countMovies,
+    },
+    Mutation: {
+        postMovie: (parent, args) => dbWorks.postMovie(args),
     }
 }
 
